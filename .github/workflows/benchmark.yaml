@@ -115,7 +115,7 @@ jobs:
                     echo "| Rank | Parser | Duration |"
                     echo "|---:|---|---:|"
                     rank=0
-                    sort -t'|' -k2 -n durations/*.txt | while IFS='|' read -r name ms; do
+                    find durations -name '*.txt' -exec cat {} + | sort -t'|' -k2 -n | while IFS='|' read -r name ms; do
                       rank=$((rank + 1))
                       printf '| %s | %s | %s ms |\n' "$rank" "$name" "$ms"
                     done
