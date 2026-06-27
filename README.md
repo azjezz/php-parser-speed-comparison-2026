@@ -17,10 +17,10 @@ Each parser walks the same corpus — the `src/` directory of the [Laravel frame
 
 ```
 Rank | Parser                  | Avg (10 runs) | vs slowest
-   1 | nikic/php-parser (v5)   |       1804 ms |       1.0x
-   2 | z7zmey/php-parser       |        267 ms |       6.8x
-   3 | halleck45/go-php-parser |        245 ms |       7.4x
-   4 | ext-ast                 |        215 ms |       8.4x
+   1 | nikic/php-parser (v5)   |       1718 ms |       1.0x
+   2 | z7zmey/php-parser       |        261 ms |       6.6x
+   3 | halleck45/go-php-parser |        252 ms |       6.8x
+   4 | ext-ast                 |        208 ms |       8.3x
 ```
 
 > Timings come from shared GitHub-hosted runners — good for rough ranking, not precise benchmarking. Live numbers appear in every run's **Summary** page.
