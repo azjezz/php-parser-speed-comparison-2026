@@ -119,4 +119,4 @@ jobs:
                       rank=$((rank + 1))
                       printf '| %s | %s | %s ms |\n' "$rank" "$name" "$ms"
                     done
-                  } >> "$GITHUB_STEP_SUMMARY"
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
