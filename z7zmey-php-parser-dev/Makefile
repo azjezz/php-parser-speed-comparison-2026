@@ -1,2 +1,2 @@
 run:
-	time ./z7zmey-php-parser-dev ../laravel/src
+	time ./z7zmey-php-parser-dev ../laravel

@@ -13,9 +13,9 @@ The tagged `z7zmey-php-parser/` variant was removed — only the dev one is kept
 
 ## How a benchmark works
 
-- Corpus = the `src/` directory of a freshly cloned `laravel/framework` (`git clone --depth 1 ... laravel`, parsed as `../laravel/src`). It is gitignored — every CI job clones it.
-- Parse only `laravel/src`, NOT the whole repo: `laravel/tests/.../fixtures/` contains intentionally broken PHP (e.g. `bad-return-strategy.php`) that hard-crashes some parsers (halleck45 exits 255).
-- Each subproject's `Makefile` has a single `run` target wrapping the parse in `time`, pointed at `../laravel/src`.
+- Corpus = a freshly cloned `laravel/framework` **with all Composer dependencies installed** (`git clone --depth 1 ... laravel` then `composer install ... --working-dir=laravel`), parsed as the whole `../laravel` tree (`src/` + `vendor/`). It is gitignored — every CI job clones and installs it.
+- After install, the corpus is pruned of intentionally-broken PHP fixtures that hard-crash some parsers (halleck45 exits 255): `rm -rf laravel/tests` and `find laravel/vendor -depth -type d -name tests -exec rm -rf {} +`. Keep these prune steps in sync across CI and the README.
+- Each subproject's `Makefile` has a single `run` target wrapping the parse in `time`, pointed at `../laravel`.
 
 ## Gotchas
 

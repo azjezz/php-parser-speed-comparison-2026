@@ -22,8 +22,13 @@ jobs:
 
             - run: composer install --no-progress --working-dir=nikic-PHP-Parser
 
-            - name: Clone Laravel corpus
-              run: git clone --depth 1 https://github.com/laravel/framework laravel
+            - name: Clone + install Laravel corpus
+              run: |
+                  git clone --depth 1 https://github.com/laravel/framework laravel
+                  composer install --no-interaction --no-progress --ignore-platform-reqs --working-dir=laravel
+                  # drop intentionally-broken PHP fixtures that crash some parsers
+                  rm -rf laravel/tests
+                  find laravel/vendor -depth -type d -name tests -exec rm -rf {} +
 
             - name: Run benchmark (timed)
               working-directory: nikic-PHP-Parser
@@ -54,8 +59,13 @@ jobs:
                   extensions: ast
                   coverage: none
 
-            - name: Clone Laravel corpus
-              run: git clone --depth 1 https://github.com/laravel/framework laravel
+            - name: Clone + install Laravel corpus
+              run: |
+                  git clone --depth 1 https://github.com/laravel/framework laravel
+                  composer install --no-interaction --no-progress --ignore-platform-reqs --working-dir=laravel
+                  # drop intentionally-broken PHP fixtures that crash some parsers
+                  rm -rf laravel/tests
+                  find laravel/vendor -depth -type d -name tests -exec rm -rf {} +
 
             - name: Run benchmark (timed)
               working-directory: ext-ast
@@ -84,8 +94,13 @@ jobs:
               with:
                   go-version: stable
 
-            - name: Clone Laravel corpus
-              run: git clone --depth 1 https://github.com/laravel/framework laravel
+            - name: Clone + install Laravel corpus
+              run: |
+                  git clone --depth 1 https://github.com/laravel/framework laravel
+                  composer install --no-interaction --no-progress --ignore-platform-reqs --working-dir=laravel
+                  # drop intentionally-broken PHP fixtures that crash some parsers
+                  rm -rf laravel/tests
+                  find laravel/vendor -depth -type d -name tests -exec rm -rf {} +
 
             - run: go build -o z7zmey-php-parser-dev .
               working-directory: z7zmey-php-parser-dev
@@ -120,8 +135,13 @@ jobs:
             - name: Install musl toolchain
               run: sudo apt-get update && sudo apt-get install -y musl-tools
 
-            - name: Clone Laravel corpus
-              run: git clone --depth 1 https://github.com/laravel/framework laravel
+            - name: Clone + install Laravel corpus
+              run: |
+                  git clone --depth 1 https://github.com/laravel/framework laravel
+                  composer install --no-interaction --no-progress --ignore-platform-reqs --working-dir=laravel
+                  # drop intentionally-broken PHP fixtures that crash some parsers
+                  rm -rf laravel/tests
+                  find laravel/vendor -depth -type d -name tests -exec rm -rf {} +
 
             # The module ships no prebuilt native libs; fetch the musl build-time
             # artifacts (libphp.a, libastbridge.a, PHP embed headers) into the
@@ -147,7 +167,7 @@ jobs:
               working-directory: halleck45-go-php-parser
               run: |
                   # warm-up: fetch runtime libs into v1/prebuilt (cached for later runs)
-                  ./halleck45-go-php-parser ../laravel/src > /dev/null
+                  ./halleck45-go-php-parser ../laravel > /dev/null
                   total=0
                   for i in $(seq 1 10); do
                     start=$(date +%s%3N)
@@ -184,7 +204,7 @@ jobs:
                   {
                     echo "## Benchmark results"
                     echo ""
-                    echo "Average wall-clock time over 10 runs parsing the Laravel framework \`src/\` corpus. Slowest first; \"vs slowest\" is how many times faster than the slowest parser."
+                    echo "Average wall-clock time over 10 runs parsing the full Laravel framework corpus (\`src/\` + all Composer \`vendor/\` dependencies). Slowest first; \"vs slowest\" is how many times faster than the slowest parser."
                     echo ""
                     echo '```'
                     {
