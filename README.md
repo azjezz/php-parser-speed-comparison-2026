@@ -2,7 +2,7 @@
 
 Speed comparison of PHP parsers, run automatically in CI.
 
-Each parser walks the same corpus — the `src/` directory of the [Laravel framework](https://github.com/laravel/framework) (cloned fresh in CI) — and parses every `.php` file. Each tool runs **10 times** and the **average** wall-clock time is reported.
+Each parser walks the same corpus — a freshly cloned [Laravel framework](https://github.com/laravel/framework) with **all Composer dependencies installed** (`src/` + `vendor/`) — and parses every `.php` file. Each tool runs **10 times** and the **average** wall-clock time is reported.
 
 ## Parsers
 
@@ -27,10 +27,11 @@ Rank | Parser                  | Avg (10 runs) | vs slowest
 
 ## Run locally
 
-First get the corpus (once, at the repo root):
+First get the corpus (once, at the repo root) — clone Laravel and install its dependencies:
 
 ```bash
 git clone --depth 1 https://github.com/laravel/framework laravel
+composer install --no-interaction --ignore-platform-reqs --working-dir=laravel
 ```
 
 Then run each subproject's `make run` target (wraps the parse in `time`):
