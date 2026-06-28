@@ -1,2 +1,2 @@
 run:
-	time ./halleck45-go-php-parser ../laravel/src
+	time ./halleck45-go-php-parser ../laravel

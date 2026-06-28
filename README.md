@@ -2,7 +2,7 @@
 
 Speed comparison of PHP parsers, run automatically in CI.
 
-Each parser walks the same corpus — the `src/` directory of the [Laravel framework](https://github.com/laravel/framework) (cloned fresh in CI) — and parses every `.php` file. Each tool runs **10 times** and the **average** wall-clock time is reported.
+Each parser walks the same corpus — a freshly cloned [Laravel framework](https://github.com/laravel/framework) with **all Composer dependencies installed** (`src/` + `vendor/`) — and parses every `.php` file. Each tool runs **10 times** and the **average** wall-clock time is reported.
 
 ## Parsers
 
@@ -19,44 +19,16 @@ Each parser walks the same corpus — the `src/` directory of the [Laravel frame
 ## Latest results
 
 ```
-Rank | Parser                        | Avg (10 runs) | vs slowest
-   1 | nikic/php-parser (v5)         |       1718 ms |       1.0x
-   2 | z7zmey/php-parser             |        261 ms |       6.6x
-   3 | halleck45/go-php-parser       |        252 ms |       6.8x
-   4 | ext-ast                       |        208 ms |       8.3x
-   5 | mago-syntax (single-threaded) |         77 ms |      22.3x
-   6 | mago-syntax (parallel)        |         31 ms |      55.4x
+Rank | Parser                  | Avg (10 runs) | vs slowest
+   1 | nikic/php-parser (v5)   |      27898 ms |       1.0x
+   2 | z7zmey/php-parser       |       4578 ms |       6.1x
+   3 | halleck45/go-php-parser |       2721 ms |      10.3x
+   4 | ext-ast                 |       2251 ms |      12.4x
 ```
 
 > Timings come from shared GitHub-hosted runners — good for rough ranking, not precise benchmarking. Live numbers appear in every run's **Summary** page.
-
-## Run locally
-
-First get the corpus (once, at the repo root):
-
-```bash
-git clone --depth 1 https://github.com/laravel/framework laravel
-```
-
-Then run each subproject's `make run` target (wraps the parse in `time`):
-
-```bash
-# PHP parsers (need PHP 8.4; ext-ast also needs the `ast` extension)
-composer install --working-dir=nikic-PHP-Parser
-make -C nikic-PHP-Parser run
-make -C ext-ast run
-
-# z7zmey (Go)
-go build -o z7zmey-php-parser-dev/z7zmey-php-parser-dev ./z7zmey-php-parser-dev
-make -C z7zmey-php-parser-dev run
-
-# mago-syntax (Rust; needs rustc >= 1.96)
-cargo build --release --manifest-path mago-syntax/Cargo.toml
-make -C mago-syntax run         # parallel (rayon)
-make -C mago-syntax run-single  # single-threaded
-```
-
-`halleck45-go-php-parser` is a cgo wrapper around an embedded PHP and needs extra setup (musl toolchain + prebuilt native libs). See the `halleck45-go-php-parser` job in the workflow and [CLAUDE.md](CLAUDE.md) for the exact build steps.
+>
+> **Core count matters.** The `ubuntu-latest` standard runner has only **4 vCPUs** (16 GB RAM). Every parser here runs single-process/single-threaded, so the absolute numbers reflect one core under a noisy-neighbour VM — not bare metal. A machine with more (or faster) cores will post very different timings; only the *relative* ranking is meaningful, and even that can shift with runner contention.
 
 ## CI
 
